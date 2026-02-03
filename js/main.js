@@ -83,20 +83,26 @@ const draggable = document.querySelector('.draggable');
 const parent = draggable.parentNode;
 let isDragging = false;
 let startX, startY, currentX = 0, currentY = 0;
-draggable.addEventListener('mousedown', (e) => {
+draggable.addEventListener('mousedown', (e) => dragstart(e));
+draggable.addEventListener('touchstart', (e) => dragstart(e));
+document.addEventListener('mousemove', (e) => dragmove(e));
+document.addEventListener('touchmove', (e) => dragmove(e));
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+function dragstart(e) {
     isDragging = true;
     startX = e.clientX - currentX;
     startY = e.clientY - currentY;
-});
-document.addEventListener('mousemove', (e) => {
+}
+
+function dragmove(e) {
     if (!isDragging) return;
     currentX = e.clientX - startX;
     currentY = e.clientY - startY;
     parent.style.transform = `translate(${currentX}px, ${currentY}px)`;
-});
-document.addEventListener('mouseup', () => {
-    isDragging = false;
-});
+}
 
 
 
