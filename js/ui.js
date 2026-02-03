@@ -21,7 +21,7 @@ export const UI = {
         UI.els.unit = document.getElementById('unit-display');
         UI.els.max = document.getElementById('max-speed');
         UI.els.odo = document.getElementById('odometer');
-        UI.els.ring = document.getElementById('speed-ring');
+        UI.els.ring = document.querySelector('.progress-circle');
         UI.els.status = document.getElementById('fusion-status');
         UI.els.badges.gps = document.getElementById('badge-gps');
         UI.els.badges.motion = document.getElementById('badge-motion');
@@ -58,9 +58,9 @@ export const UI = {
         if (status === 'active') {
             el.className = "px-2 py-1 rounded text-xs font-bold bg-[var(--accent-color)] text-black transition-colors";
         } else if (status === 'error') {
-            el.className = "px-2 py-1 rounded text-xs font-bold bg-red-500 text-white transition-colors";
+            el.className = "px-2 py-1 rounded text-xs font-bold bg-[var(--danger-color)] text-white transition-colors";
         } else if (status === 'warn') {
-            el.className = "px-2 py-1 rounded text-xs font-bold bg-yellow-500 text-black transition-colors";
+            el.className = "px-2 py-1 rounded text-xs font-bold bg-[var(--warn-color)] text-black transition-colors";
         } else {
             el.className = "px-2 py-1 rounded text-xs font-bold bg-gray-700 text-gray-400 transition-colors";
         }
@@ -76,24 +76,24 @@ export const UI = {
         if(UI.els.odo) UI.els.odo.textContent = UI.formatDistance(STATE.distance);
 
         // 更新进度环
-        let percent = parseFloat(displaySpeed) / CONFIG.maxScale;
+        const percent = parseFloat(displaySpeed) / CONFIG.maxScale;
         // if (percent > 1) percent = 1;
-        // const offset = 100 - (percent * 100);
-        // const offset = 100;
-        changePrg(percent);
+        const offset = 100 - (percent * 100);
+        const offset = 50; // debug
+
+        // const progressEl = document.querySelector('.progress-circle');
+        UI.els.ring.style.setProperty('--percent', offset + 'px');
+
+        const circbg = document.getElementById("circle-bg");
+        UI.els.ring.style.setProperty('--size', circbg.offsetHeight + 'px');
 
         if(UI.els.ring) {
             UI.els.ring.style.strokeDashoffset = offset;
 
-            if (percent > 0.8) UI.els.ring.style.color = '#ef4444';
-            else if (percent > 0.5) UI.els.ring.style.color = '#fbbf24';
+            if (percent > 0.8) UI.els.ring.style.color = 'var(--danger-color)';
+            else if (percent > 0.5) UI.els.ring.style.color = 'var(--warn-color)';
             else UI.els.ring.style.color = 'var(--accent-color)';
         }
     }
 };
 
-const progressEl = document.querySelector('.progress-circle');
-
-function changePrg({ value }, property, unit = '') {
-    progressEl.style.setProperty(property, value + unit);
-}

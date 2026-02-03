@@ -2,16 +2,16 @@
     --bg-color: #0f172a;
     --panel-bg: #1e293b;
     --text-color: #e2e8f0;
-    --accent-color: #38bdf8;
-    --warn-color: #fbbf24;
-    --danger-color: #ef4444;
+    --accent-color: oklch(71.5% 0.143 215.221); /* cyan 500 */
+    --warn-color: oklch(76.9% 0.188 70.08); /* amber 500 */
+    --danger-color: oklch(63.7% 0.237 25.331); /* red 500 */
 }
 
 body.theme-oled {
-    --bg-color: #000000;
-    --panel-bg: #000000;
-    --text-color: #ffffff;
-    --accent-color: #00ff9d;
+    --bg-color: #000;
+    --panel-bg: #000;
+    --text-color: oklch(70.8% 0 0); /* neutral 400 */
+    --accent-color: oklch(62.7% 0.194 149.214); /* #00ff9d */ /* green 600 */
 }
 
 body {
@@ -54,10 +54,8 @@ body {
 
 .progress-circle {
     --percent: 0;  /* 百分数 */
-    --size: 384px;  /* 尺寸大小 */
+    --size: 16px;  /* 尺寸大小 */
     --border-width: calc(var(--size) / 16);  /* 环宽（粗细） */
-    --color: #7856d7;  /* 主色 */
-    --inactive-color: #ccc;  /* 辅助色 */
 
     position: relative;
     width: var(--size);

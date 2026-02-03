@@ -3,6 +3,8 @@ import { Logger } from './logger.js';
 import { Hardware } from './hardware.js';
 import { UI } from './ui.js';
 
+const modulename = "main";
+
 /* 事件绑定 */
 const btnStart = document.getElementById('btn-start');
 if (btnStart) {
@@ -43,7 +45,7 @@ const algoSelect = document.getElementById('algo-select');
 if (algoSelect) {
     algoSelect.addEventListener('change', (e) => {
         CONFIG.mode = e.target.value;
-        Logger.log("main", `切换算法模式: ${e.target.options[e.target.selectedIndex].text}`);
+        Logger.log(modulename, `切换算法模式: ${e.target.options[e.target.selectedIndex].text}`);
     });
 }
 
@@ -61,10 +63,10 @@ if (themeToggle) {
     themeToggle.addEventListener('change', (e) => {
         if (e.target.checked) {
             document.body.classList.add('theme-oled');
-            Logger.log("main", "启用 纯黑主题");
+            Logger.log(modulename, "启用 纯黑主题");
         } else {
             document.body.classList.remove('theme-oled');
-            Logger.log("main", "启用 标准暗色主题");
+            Logger.log(modulename, "启用 标准暗色主题");
         }
     });
 }
@@ -99,4 +101,4 @@ document.addEventListener('mouseup', () => {
 
 
 UI.init();
-Logger.log("main", "系统就绪，等待启动...", "info");
+Logger.log(modulename, "系统就绪，等待启动...", "info");

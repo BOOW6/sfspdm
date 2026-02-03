@@ -2,6 +2,8 @@ import { CONFIG } from './config.js';
 import { STATE } from './state.js';
 import { Logger } from './logger.js';
 
+const modulename = "debug";
+
 export const DebugCore = {
     flags: {
         forceTunnel: false, // 强制阻断真实GPS
@@ -29,16 +31,16 @@ export const DebugCore = {
             debugToggle.addEventListener('change', (e) => {
                 CONFIG.debug = e.target.checked;
                 const debugPanel = document.getElementById('debug-panel');
-                const miniStats = document.getElementById('debug-mini-stats');
+                // const miniStats = document.getElementById('debug-mini-stats');
                 
                 if(debugPanel) debugPanel.classList.toggle('hidden', !CONFIG.debug);
-                if(miniStats) {
-                    miniStats.classList.toggle('flex', CONFIG.debug);
-                    miniStats.classList.toggle('hidden', !CONFIG.debug);
-                }
+                // if(miniStats) {
+                //     miniStats.classList.toggle('flex', CONFIG.debug);
+                //     miniStats.classList.toggle('hidden', !CONFIG.debug);
+                // }
                 
                 if(CONFIG.debug) DebugCore.resizeCanvas();
-                Logger.log("debug", `调试模式: ${CONFIG.debug ? 'ON' : 'OFF'}`);
+                Logger.log(modulename, `调试模式: ${CONFIG.debug ? 'ON' : 'OFF'}`);
             });
         }
 
@@ -60,7 +62,7 @@ export const DebugCore = {
                         },
                         timestamp: Date.now()
                     });
-                    Logger.log("debug", `Inject GPS Speed: ${speedKmh}km/h, Acc: ${acc}m`);
+                    Logger.log(modulename, `Inject GPS Speed: ${speedKmh}km/h, Acc: ${acc}m`);
                 }
             });
         }
@@ -74,12 +76,12 @@ export const DebugCore = {
                     btn.classList.add('bg-red-600', 'text-white');
                     btn.classList.remove('bg-slate-700');
                     btn.innerHTML = '<i class="fas fa-ban"></i> Tunnel Active';
-                    Logger.log("debug", "屏蔽 GPS 开启");
+                    Logger.log(modulename, "屏蔽 GPS 开启");
                 } else {
                     btn.classList.remove('bg-red-600');
                     btn.classList.add('bg-slate-700');
                     btn.innerHTML = '<i class="fas fa-archway"></i> Force Tunnel';
-                    Logger.log("debug", "屏蔽 GPS 关闭");
+                    Logger.log(modulename, "屏蔽 GPS 关闭");
                 }
             });
         }
@@ -88,7 +90,7 @@ export const DebugCore = {
         if (btnPulse) {
             btnPulse.addEventListener('click', () => {
                 DebugCore.flags.accelPulseStart = Date.now();
-                Logger.log("debug", "触发 2s 2m/s² 加速度脉冲");
+                Logger.log(modulename, "触发 2s 2m/s² 加速度脉冲");
             });
         }
 
@@ -99,7 +101,7 @@ export const DebugCore = {
                 const btn = e.currentTarget;
                 btn.classList.toggle('bg-green-600');
                 btn.classList.toggle('bg-slate-700');
-                Logger.log("debug", `强制 ZUPT 静止 ${DebugCore.flags.forceZupt ? 'ON' : 'OFF'}`);
+                Logger.log(modulename, `强制 ZUPT 静止 ${DebugCore.flags.forceZupt ? 'ON' : 'OFF'}`);
             });
         }
 
