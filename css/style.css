@@ -54,7 +54,7 @@ body {
 
 .progress-circle {
     --percent: 0;  /* 百分数 */
-    --size: 24em;  /* 尺寸大小 */
+    --size: 384px;  /* 尺寸大小 */
     --border-width: calc(var(--size) / 16);  /* 环宽（粗细） */
     --color: #7856d7;  /* 主色 */
     --inactive-color: #ccc;  /* 辅助色 */
