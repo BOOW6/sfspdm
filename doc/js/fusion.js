@@ -1,7 +1,7 @@
 import { CONFIG } from './config.js';
 import { STATE } from './state.js';
-import { UI } from '../ui/ui.js';
-import { DebugCore } from '../debug/debug.js';
+import { UI } from './ui.js';
+import { DebugCore } from './debug.js';
 
 export class FusionEngine {
     constructor() {
@@ -54,8 +54,9 @@ export class FusionEngine {
                 const variance = history.reduce((a, b) => a + (b - mean) ** 2, 0) / history.length;
 
                 // 如果方差过大，认为是无效晃动或震动干扰
-                // 阈值: 0.2 (经验值，约等于 (0.45 m/s^2)^2)
-                if (variance > 0.2) {
+                // 阈值: 0.20 (约等于 (0.45 m/s^2)^2，默认值)
+                //      0.81 (约等于 (0.9 m/s^2)^2)
+                if (variance > 0.81) {
                     accMag = 0;
                 }
             }
@@ -110,7 +111,7 @@ export class FusionEngine {
             if (CONFIG.mode === 'tunnel' && gpsAge < 10 && !DebugCore.flags.forceTunnel) {
                 UI.updateFusionBadge("隧道模式: 惯性导航", "text-yellow-400");
             } else if (DebugCore.flags.forceTunnel) {
-                 UI.updateFusionBadge("调试: 隧道模拟中", "text-red-400");
+                 UI.updateFusionBadge("调试: 隧道模拟中", "text-yellow-400");
                  STATE.kalman.x *= 0.99; // 稍微快一点的衰减
             } else {
                 STATE.kalman.x *= 0.98;

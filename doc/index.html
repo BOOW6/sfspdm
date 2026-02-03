@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sensor Fusion Speedometer</title>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="h-screen flex flex-col justify-between">
 
@@ -38,10 +38,19 @@
 
         <!-- SVG 仪表盘背景 -->
         <div class="relative w-72 h-72 md:w-96 md:h-96">
-            <svg class="w-full h-full" viewBox="0 0 120 120">
+            <!-- <svg class="w-full h-full" viewBox="0 0 120 120">
                 <circle class="text-gray-700" stroke-width="6" stroke="currentColor" fill="transparent" r="52" cx="60" cy="60" />
-                <circle id="speed-ring" class="text-[var(--accent-color)]" stroke-width="6" stroke-dasharray="326.72" stroke-dashoffset="326.72" stroke-linecap="round" stroke="currentColor" fill="transparent" r="52" cx="60" cy="60" />
-            </svg>
+                <circle id="speed-ring" class="text-[var(--accent-color)]" stroke-width="6" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" stroke="currentColor" fill="transparent" r="52" cx="60" cy="60" />
+            </svg> -->
+            <div class="progress-circle">
+                <svg>
+                    <circle stroke="var(--inactive-color)" />
+                    <circle stroke="var(--color)"
+                            class="progress-value"
+                            style="stroke-dasharray: calc(2 * 3.1415 * var(--r) * (var(--percent) / 100)), 1000"
+                            />
+                </svg>
+            </div>
 
             <div class="absolute inset-0 flex flex-col items-center justify-center">
                 <div class="text-6xl md:text-8xl font-bold digital-font tracking-tighter" id="speed-display">0.0</div>
@@ -54,8 +63,8 @@
             等待数据...
         </div>
 
-        <!-- 调试模式：原始数据预览 (White-box small view) -->
-        <div id="debug-mini-stats" class="hidden mt-2 text-[10px] font-mono text-gray-500 gap-4">
+        <!-- 原始数据预览 -->
+        <div id="debug-mini-stats" class="mt-2 text-[10px] font-mono text-gray-500 gap-4">
             <span>Raw GPS: <span id="dbg-raw-gps" class="text-blue-400">0.0</span></span>
             <span>Acc Mag: <span id="dbg-acc-mag" class="text-red-400">0.00</span></span>
         </div>
@@ -74,8 +83,9 @@
     </main>
 
     <!-- 调试面板 (绝对定位，默认隐藏) -->
-    <div id="debug-panel" class="hidden fixed bottom-[110px] left-2 right-2 md:left-auto md:right-4 md:w-80 bg-slate-900/90 border border-slate-700 rounded-lg p-3 z-40 shadow-2xl overflow-hidden">
-        <div class="flex justify-between items-center mb-2 border-b border-slate-700 pb-1">
+    <div id="debug-panel" class="hidden fixed bottom-[160px] left-2 right-2 md:left-auto md:right-4 md:w-80 bg-slate-900 border border-dashed border-slate-700 rounded-lg p-3 z-40 shadow-2xl overflow:auto scrollbar-width:thin">
+        <!-- 该元素作拖拽监听，拖拽上一级元素 -->
+        <div class="draggable flex justify-between items-center mb-2 border-b border-slate-700 pb-1">
             <h4 class="text-xs font-bold text-[var(--accent-color)] uppercase"><i class="fas fa-bug"></i> Debug Console</h4>
             <div class="text-[10px] text-gray-400 font-mono">dt: <span id="dbg-dt">0</span>ms | GPS Age: <span id="dbg-gps-age">0.0</span>s</div>
         </div>
@@ -139,13 +149,13 @@
             <span class="text-xs text-gray-500 font-bold">SYSTEM CONSOLE</span>
             <button id="clear-log" class="text-xs text-gray-500 hover:text-white">Clear</button>
         </div>
-        <div id="console-log" class="bg-gray-900 bg-opacity-80 p-2 rounded border border-gray-800 text-green-400 font-mono text-xs h-24 overflow-y-auto">
+        <div id="console-log" class="bg-gray-900 bg-opacity-80 p-2 rounded border border-gray-800 text-green-400 font-mono text-xs h-26 overflow-y-auto">
             <!-- Logs will appear here -->
         </div>
     </footer>
 
     <!-- 权限请求遮罩 (iOS必须手动触发) -->
-    <div id="permission-overlay" class="fixed inset-0 bg-black flex flex-col items-center justify-center p-6 text-center">
+    <div id="permission-overlay" class="fixed inset-0 backdrop-blur-md bg-black/60 flex flex-col items-center justify-center p-6 text-center">
         <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-6 animate-pulse">
             <i class="fas fa-play text-2xl text-white"></i>
         </div>
@@ -160,7 +170,7 @@
     </div>
 
     <!-- 设置模态框 -->
-    <div id="settings-modal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm">
+    <div id="settings-modal" class="modal hidden fixed inset-0 backdrop-blur bg-black/30 z-50 flex items-center justify-center">
         <div class="bg-[var(--panel-bg)] w-full max-w-sm rounded-2xl p-6 shadow-2xl border border-gray-800">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold">设置</h3>
@@ -199,13 +209,13 @@
 
                 <!-- 仪表盘量程 -->
                 <div>
-                    <label class="text-xs text-gray-400 uppercase font-bold block mb-2">表盘最大速度: <span id="scale-val">100</span></label>
+                    <label class="text-xs text-gray-400 uppercase font-bold block mb-2">表盘量程: <span id="scale-val">100</span></label>
                     <input type="range" id="scale-range" min="30" max="300" step="10" value="100" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
                 </div>
 
                 <!-- 主题 -->
                 <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium">OLED 纯黑模式</span>
+                    <span class="text-sm font-medium">纯黑主题</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="theme-toggle" class="sr-only peer">
                         <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--accent-color)]"></div>
@@ -216,6 +226,6 @@
     </div>
 
     <!-- 逻辑脚本 -->
-    <script type="module" src="src/js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

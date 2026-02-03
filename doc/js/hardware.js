@@ -1,13 +1,13 @@
-import { Logger } from '../utils/logger.js';
+import { Logger } from './logger.js';
 import { CONFIG } from './config.js';
 import { STATE } from './state.js';
-import { UI } from '../ui/ui.js';
-import { DebugCore } from '../debug/debug.js';
+import { UI } from './ui.js';
+import { DebugCore } from './debug.js';
 import { FusionEngine } from './fusion.js';
 
 export const Hardware = {
     init: async () => {
-        Logger.log("正在初始化传感器...", "info");
+        Logger.log("hardware", "正在初始化传感器...", "info");
 
         // Debug Init - Pass callback to avoid circular dependency import issue in debug.js
         DebugCore.init((gpsData) => {
@@ -18,9 +18,9 @@ export const Hardware = {
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 Hardware.requestWakeLock();
-                Logger.log("应用回到前台，重新激活 WakeLock");
+                Logger.log("hardware", "应用回到前台，重新激活 Wake Lock");
             } else {
-                Logger.log("警告: 应用在后台运行，传感器可能暂停", "warn");
+                Logger.log("hardware", "警告: 应用在后台运行，传感器可能暂停", "warn");
             }
         });
 
@@ -35,7 +35,7 @@ export const Hardware = {
                 }
             );
         } else {
-            Logger.log("不支持 Geolocation API", "error");
+            Logger.log("hardware", "不支持 Geolocation API", "error");
             UI.setStatus('gps', 'error');
         }
 
@@ -47,20 +47,20 @@ export const Hardware = {
                     const permissionState = await DeviceMotionEvent.requestPermission();
                     if (permissionState === 'granted') {
                         window.addEventListener('devicemotion', Hardware.handleMotion);
-                        Logger.log("加速度计权限已获取 (iOS)");
+                        Logger.log("hardware", "已获取加速度计权限");
                     } else {
-                        Logger.log("用户拒绝了加速度计权限", "error");
+                        Logger.log("hardware", "用户拒绝了加速度计权限", "error");
                         UI.setStatus('motion', 'error');
                     }
                 } catch (e) {
-                    Logger.log("请求动作权限失败: " + e, "error");
+                    Logger.log("hardware", "请求权限失败: " + e, "error");
                 }
             } else {
                 window.addEventListener('devicemotion', Hardware.handleMotion);
-                Logger.log("加速度计监听已启动");
+                Logger.log("hardware", "开始监听加速度计");
             }
         } else {
-            Logger.log("不支持 DeviceMotionEvent", "error");
+            Logger.log("hardware", "不支持 DeviceMotionEvent", "error");
             UI.setStatus('motion', 'error');
         }
 
@@ -76,11 +76,11 @@ export const Hardware = {
             if ('wakeLock' in navigator) {
                 CONFIG.wakeLock = await navigator.wakeLock.request('screen');
                 UI.setStatus('wake', 'active');
-                Logger.log("屏幕常亮已激活");
+                Logger.log("hardware", "Wake Lock 已激活");
             }
         } catch (err) {
             UI.setStatus('wake', 'error');
-            Logger.log(`Wake Lock 失败: ${err.name}, ${err.message}`, "warn");
+            Logger.log("hardware", `Wake Lock 失败: ${err.name}, ${err.message}`, "warn");
         }
     },
 
@@ -100,14 +100,14 @@ export const Hardware = {
             UI.setStatus('gps', 'warn');
         } else {
             UI.setStatus('gps', 'warn');
-            if (!CONFIG.debug) Logger.log(`GPS 信号弱: 精度 ${Math.round(coords.accuracy)}m`, "warn");
+            if (!CONFIG.debug) Logger.log("hardware", `GPS 信号弱: 精度 ${Math.round(coords.accuracy)}m`, "warn");
         }
     },
 
     handleGPSError: (err) => {
         STATE.gps.active = false;
         UI.setStatus('gps', 'error');
-        Logger.log(`GPS 错误 (${err.code}): ${err.message}`, "error");
+        Logger.log("hardware", `GPS 错误 (${err.code}): ${err.message}`, "error");
     },
 
     handleMotion: (event) => {

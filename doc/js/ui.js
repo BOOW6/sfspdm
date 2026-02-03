@@ -1,5 +1,5 @@
-import { CONFIG } from '../core/config.js';
-import { STATE } from '../core/state.js';
+import { CONFIG } from './config.js';
+import { STATE } from './state.js';
 
 export const UI = {
     els: {
@@ -76,11 +76,12 @@ export const UI = {
         if(UI.els.odo) UI.els.odo.textContent = UI.formatDistance(STATE.distance);
 
         // 更新进度环
-        const circumference = 326.72;
         let percent = parseFloat(displaySpeed) / CONFIG.maxScale;
-        if (percent > 1) percent = 1;
+        // if (percent > 1) percent = 1;
+        // const offset = 100 - (percent * 100);
+        // const offset = 100;
+        changePrg(percent);
 
-        const offset = circumference - (percent * circumference);
         if(UI.els.ring) {
             UI.els.ring.style.strokeDashoffset = offset;
 
@@ -90,3 +91,9 @@ export const UI = {
         }
     }
 };
+
+const progressEl = document.querySelector('.progress-circle');
+
+function changePrg({ value }, property, unit = '') {
+    progressEl.style.setProperty(property, value + unit);
+}

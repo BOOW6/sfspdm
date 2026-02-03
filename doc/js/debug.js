@@ -1,6 +1,6 @@
-import { CONFIG } from '../core/config.js';
-import { STATE } from '../core/state.js';
-import { Logger } from '../utils/logger.js';
+import { CONFIG } from './config.js';
+import { STATE } from './state.js';
+import { Logger } from './logger.js';
 
 export const DebugCore = {
     flags: {
@@ -38,7 +38,7 @@ export const DebugCore = {
                 }
                 
                 if(CONFIG.debug) DebugCore.resizeCanvas();
-                Logger.log(`调试模式: ${CONFIG.debug ? 'ON' : 'OFF'}`);
+                Logger.log("debug", `调试模式: ${CONFIG.debug ? 'ON' : 'OFF'}`);
             });
         }
 
@@ -60,7 +60,7 @@ export const DebugCore = {
                         },
                         timestamp: Date.now()
                     });
-                    Logger.log(`[Inject] GPS Speed: ${speedKmh}km/h, Acc: ${acc}m`);
+                    Logger.log("debug", `Inject GPS Speed: ${speedKmh}km/h, Acc: ${acc}m`);
                 }
             });
         }
@@ -74,12 +74,12 @@ export const DebugCore = {
                     btn.classList.add('bg-red-600', 'text-white');
                     btn.classList.remove('bg-slate-700');
                     btn.innerHTML = '<i class="fas fa-ban"></i> Tunnel Active';
-                    Logger.log("调试: 强制隧道模式开启 (屏蔽 GPS)");
+                    Logger.log("debug", "屏蔽 GPS 开启");
                 } else {
                     btn.classList.remove('bg-red-600');
                     btn.classList.add('bg-slate-700');
                     btn.innerHTML = '<i class="fas fa-archway"></i> Force Tunnel';
-                    Logger.log("调试: 强制隧道模式关闭");
+                    Logger.log("debug", "屏蔽 GPS 关闭");
                 }
             });
         }
@@ -88,7 +88,7 @@ export const DebugCore = {
         if (btnPulse) {
             btnPulse.addEventListener('click', () => {
                 DebugCore.flags.accelPulseStart = Date.now();
-                Logger.log("调试: 触发 2s 加速度脉冲 (2m/s²)");
+                Logger.log("debug", "触发 2s 2m/s² 加速度脉冲");
             });
         }
 
@@ -99,7 +99,7 @@ export const DebugCore = {
                 const btn = e.currentTarget;
                 btn.classList.toggle('bg-green-600');
                 btn.classList.toggle('bg-slate-700');
-                Logger.log(`调试: 强制 ZUPT (静止) ${DebugCore.flags.forceZupt ? 'ON' : 'OFF'}`);
+                Logger.log("debug", `强制 ZUPT 静止 ${DebugCore.flags.forceZupt ? 'ON' : 'OFF'}`);
             });
         }
 

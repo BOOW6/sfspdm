@@ -1,9 +1,9 @@
-import { CONFIG } from './core/config.js';
-import { Logger } from './utils/logger.js';
-import { Hardware } from './core/hardware.js';
-import { UI } from './ui/ui.js';
+import { CONFIG } from './config.js';
+import { Logger } from './logger.js';
+import { Hardware } from './hardware.js';
+import { UI } from './ui.js';
 
-// --- 事件绑定 ---
+/* 事件绑定 */
 const btnStart = document.getElementById('btn-start');
 if (btnStart) {
     btnStart.addEventListener('click', Hardware.init);
@@ -43,7 +43,7 @@ const algoSelect = document.getElementById('algo-select');
 if (algoSelect) {
     algoSelect.addEventListener('change', (e) => {
         CONFIG.mode = e.target.value;
-        Logger.log(`切换算法模式: ${e.target.options[e.target.selectedIndex].text}`);
+        Logger.log("main", `切换算法模式: ${e.target.options[e.target.selectedIndex].text}`);
     });
 }
 
@@ -61,10 +61,10 @@ if (themeToggle) {
     themeToggle.addEventListener('change', (e) => {
         if (e.target.checked) {
             document.body.classList.add('theme-oled');
-            Logger.log("启用 OLED 纯黑模式");
+            Logger.log("main", "启用 纯黑主题");
         } else {
             document.body.classList.remove('theme-oled');
-            Logger.log("启用 标准暗色模式");
+            Logger.log("main", "启用 标准暗色主题");
         }
     });
 }
@@ -74,5 +74,29 @@ if (clearLog) {
     clearLog.addEventListener('click', Logger.clear);
 }
 
+
+
+/* 拖拽 */
+const draggable = document.querySelector('.draggable');
+const parent = draggable.parentNode;
+let isDragging = false;
+let startX, startY, currentX = 0, currentY = 0;
+draggable.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX - currentX;
+    startY = e.clientY - currentY;
+});
+document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    currentX = e.clientX - startX;
+    currentY = e.clientY - startY;
+    parent.style.transform = `translate(${currentX}px, ${currentY}px)`;
+});
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+
+
 UI.init();
-Logger.log("系统就绪，等待启动...", "info");
+Logger.log("main", "系统就绪，等待启动...", "info");
