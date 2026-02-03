@@ -78,7 +78,7 @@ export const UI = {
         // 更新进度环
         const percent = parseFloat(displaySpeed) / CONFIG.maxScale;
         // if (percent > 1) percent = 1;
-        const offset = 100 - (percent * 100);
+        // const offset = 100 - (percent * 100);
         const offset = 50; // debug
 
         // const progressEl = document.querySelector('.progress-circle');
