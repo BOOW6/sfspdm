@@ -8,6 +8,7 @@ export const UI = {
         max: null,
         odo: null,
         ring: null,
+        ringVal: null,
         status: null,
         badges: {
             gps: null,
@@ -22,6 +23,7 @@ export const UI = {
         UI.els.max = document.getElementById('max-speed');
         UI.els.odo = document.getElementById('odometer');
         UI.els.ring = document.querySelector('.progress-circle');
+        UI.els.ringVal = document.querySelector('.progress-circle .progress-value');
         UI.els.status = document.getElementById('fusion-status');
         UI.els.badges.gps = document.getElementById('badge-gps');
         UI.els.badges.motion = document.getElementById('badge-motion');
@@ -76,23 +78,44 @@ export const UI = {
         if(UI.els.odo) UI.els.odo.textContent = UI.formatDistance(STATE.distance);
 
         // 更新进度环
-        const percent = parseFloat(displaySpeed) / CONFIG.maxScale;
-        // if (percent > 1) percent = 1;
-        // const offset = 100 - (percent * 100);
-        const offset = 50; // debug
+        let percent = parseFloat(displaySpeed) / CONFIG.maxScale;
+        if (percent > 1) percent = 1;
+        if (percent < 0) percent = 0;
 
-        // const progressEl = document.querySelector('.progress-circle');
-        UI.els.ring.style.setProperty('--percent', offset + 'px');
+        if (UI.els.ring) {
+            // 获取容器尺寸
+            const circbg = document.getElementById("circle-bg");
+            const size = circbg ? circbg.offsetHeight : 0;
 
-        const circbg = document.getElementById("circle-bg");
-        UI.els.ring.style.setProperty('--size', circbg.offsetHeight + 'px');
+            if (size > 0) {
+                UI.els.ring.style.setProperty('--size', size + 'px');
+                
+                // 手动计算周长以避免 CSS calc 问题
+                // CSS: r = (size - border) / 2; border = size / 16
+                // r = size * (1 - 1/16) / 2 = size * 15 / 32
+                const r = size * 15 / 32;
+                const circumference = 2 * Math.PI * r;
+                const dash = circumference * percent;
 
-        if(UI.els.ring) {
-            UI.els.ring.style.strokeDashoffset = offset;
+                // 确保获取了 svg circle 元素
+                if (!UI.els.ringVal) UI.els.ringVal = UI.els.ring.querySelector('.progress-value');
+                
+                if (UI.els.ringVal) {
+                    // 应用 dasharray
+                    UI.els.ringVal.style.strokeDasharray = `${dash} ${circumference}`;
+                    UI.els.ringVal.style.strokeDashoffset = '0'; // 确保从头开始
 
-            if (percent > 0.8) UI.els.ring.style.color = 'var(--danger-color)';
-            else if (percent > 0.5) UI.els.ring.style.color = 'var(--warn-color)';
-            else UI.els.ring.style.color = 'var(--accent-color)';
+                    // 数值为0时隐藏
+                    UI.els.ringVal.style.opacity = (percent <= 0) ? '0' : '1';
+                    
+                    // 更新颜色
+                    let colorVar = 'var(--accent-color)';
+                    if (percent > 0.8) colorVar = 'var(--danger-color)';
+                    else if (percent > 0.5) colorVar = 'var(--warn-color)';
+                    
+                    UI.els.ringVal.style.stroke = colorVar;
+                }
+            }
         }
     }
 };

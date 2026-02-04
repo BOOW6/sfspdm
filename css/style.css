@@ -29,24 +29,6 @@ body {
     font-family: 'Roboto Mono', monospace;
 }
 
-/* 仪表盘指针动画 */
-/* .gauge-needle { */
-/*     transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94); */
-/*     will-change: transform; */
-/*     transform-origin: bottom center; */
-/*     transform: rotate(-90deg); */
-/*     transform-origin: 50% 50%; */
-/* } */
-
-/* 进度环 SVG */
-/* .progress-ring__circle { */
-/*     transition: stroke-dashoffset 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94); */
-/*     transform: rotate(-90deg); */
-/*     transform-origin: 50% 50%; */
-/* } */
-
-
-
 /* SVG 容器 */
 .progress-circle > svg {
     width: 100%;
@@ -75,13 +57,8 @@ body {
     fill: none;
     stroke-width: var(--border-width);
     stroke-linecap: round;
-    transition: stroke-dasharray 0.06s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke .02s;
+    transition: stroke-dasharray .06s cubic-bezier(0.25, 0.46, 0.45, 0.94), stroke 0.25s ease, opacity 0.15s ease;
 }
-
-/* 进度为0时隐藏进度条 */
-.progress-value {opacity: var(--percent);}
-
-
 
 /* 控制台日志区域 */
 #console-log {
@@ -111,19 +88,32 @@ body {
 }
 
 /* 范围滑块样式微调 */
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 16px;
     width: 16px;
-    border-radius: 50%;
+    border-radius: 8px;
     background: var(--accent-color);
-    margin-top: -6px;
+    margin-top: -4px;
+    transition: background 0.15s ease;
 }
+
+input[type=range]::-webkit-slider-thumb:hover {
+    background: hsl(from var(--accent-color) h s calc(l - 5));
+}
+
 input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
-    height: 4px;
-    background: #475569;
-    border-radius: 2px;
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
 }
 
 /* 拖拽 */

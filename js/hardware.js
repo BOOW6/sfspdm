@@ -22,6 +22,7 @@ export const Hardware = {
                 Hardware.requestWakeLock();
                 Logger.log(modulename, "应用回到前台，重新激活 Wake Lock");
             } else {
+                UI.setStatus('wake', 'warn');
                 Logger.log(modulename, "警告: 应用在后台运行，传感器可能暂停", "warn");
             }
         });
@@ -82,7 +83,7 @@ export const Hardware = {
             }
         } catch (err) {
             UI.setStatus('wake', 'error');
-            Logger.log(modulename, `Wake Lock 失败: ${err.name}, ${err.message}`, "warn");
+            Logger.log(modulename, `Wake Lock 失败: ${err.name}, ${err.message}`, "error");
         }
     },
 
@@ -96,14 +97,13 @@ export const Hardware = {
         STATE.gps.timestamp = timestamp || Date.now();
         STATE.gps.speed = coords.speed !== null ? coords.speed : 0;
 
+        const elAccDisp = document.getElementById('gpsacc-display');
+        elAccDisp.textContent = Math.round(coords.accuracy);
+
         if (coords.accuracy < 20) {
             UI.setStatus('gps', 'active');
-            if (CONFIG.debug)
-                Logger.log(modulename, `GPS 信号正常: 精度 ${Math.round(coords.accuracy)}m`, "");
         } else if (coords.accuracy < 50) {
             UI.setStatus('gps', 'warn');
-            if (CONFIG.debug)
-                Logger.log(modulename, `GPS 信号一般: 精度 ${Math.round(coords.accuracy)}m`, "warn");
         } else {
             UI.setStatus('gps', 'warn');
             Logger.log(modulename, `GPS 信号较差: 精度 ${Math.round(coords.accuracy)}m`, "warn");
