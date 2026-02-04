@@ -136,9 +136,7 @@ export class FusionEngine {
         // 7. 渲染与调试数据导出
         UI.render();
 
-        if (CONFIG.debug) {
-            DebugCore.updateStats(dt, gpsAge, currentK, isGpsValid ? STATE.gps.speed : 0, accMag);
-        }
+        DebugCore.updateStats(dt, gpsAge, currentK, isGpsValid ? STATE.gps.speed : 0, accMag);
 
         requestAnimationFrame(this.update.bind(this));
     }

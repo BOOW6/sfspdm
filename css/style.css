@@ -1,17 +1,19 @@
 :root {
-    --bg-color: #0f172a;
-    --panel-bg: #1e293b;
-    --text-color: #e2e8f0;
-    --accent-color: oklch(71.5% 0.143 215.221); /* cyan 500 */
-    --warn-color: oklch(76.9% 0.188 70.08); /* amber 500 */
-    --danger-color: oklch(63.7% 0.237 25.331); /* red 500 */
+    --bg-color: oklch(12.9% 0.042 264.695);     /* slate-950 */
+    --panel-bg: oklch(20.8% 0.042 265.755);     /* slate-900 */
+    --border-color: oklch(37.2% 0.044 257.287); /* slate-700 */
+    --text-color: oklch(92.8% 0.006 264.531);   /* gray-200 */
+    --accent-color: oklch(71.5% 0.143 215.221); /* cyan-500 */
+    --warn-color: oklch(76.9% 0.188 70.08);     /* amber-500 */
+    --danger-color: oklch(63.7% 0.237 25.331);  /* red-500 */
 }
 
 body.theme-oled {
     --bg-color: #000;
-    --panel-bg: #000;
-    --text-color: oklch(70.8% 0 0); /* neutral 400 */
-    --accent-color: oklch(62.7% 0.194 149.214); /* #00ff9d */ /* green 600 */
+    --panel-bg: oklch(14.5% 0 0);       /* neutral-950 */
+    --border-color: oklch(26.9% 0 0);   /* neutral-800 */
+    --text-color: oklch(87% 0 0);       /* neutral-300 */
+    --accent-color: oklch(62.7% 0.194 149.214); /* green-600 */
 }
 
 body {
@@ -127,5 +129,7 @@ input[type=range]::-webkit-slider-runnable-track {
 /* 拖拽 */
 .draggable {
 /*     position: relative; */
-    cursor: move;
+    cursor: move;       /* 鼠标指针样式 */
+    touch-action: none; /* 取消默认的触摸处理（如缩放和滚动） */
+    user-select: none;  /* 防止拖拽时选中文字 */
 }

@@ -98,11 +98,15 @@ export const Hardware = {
 
         if (coords.accuracy < 20) {
             UI.setStatus('gps', 'active');
+            if (CONFIG.debug)
+                Logger.log(modulename, `GPS 信号正常: 精度 ${Math.round(coords.accuracy)}m`, "");
         } else if (coords.accuracy < 50) {
             UI.setStatus('gps', 'warn');
+            if (CONFIG.debug)
+                Logger.log(modulename, `GPS 信号一般: 精度 ${Math.round(coords.accuracy)}m`, "warn");
         } else {
             UI.setStatus('gps', 'warn');
-            if (!CONFIG.debug) Logger.log(modulename, `GPS 信号弱: 精度 ${Math.round(coords.accuracy)}m`, "warn");
+            Logger.log(modulename, `GPS 信号较差: 精度 ${Math.round(coords.accuracy)}m`, "warn");
         }
     },
 

@@ -63,10 +63,10 @@ if (themeToggle) {
     themeToggle.addEventListener('change', (e) => {
         if (e.target.checked) {
             document.body.classList.add('theme-oled');
-            Logger.log(modulename, "启用 纯黑主题");
+            Logger.log(modulename, "应用 纯黑主题");
         } else {
             document.body.classList.remove('theme-oled');
-            Logger.log(modulename, "启用 标准暗色主题");
+            Logger.log(modulename, "应用 标准暗色主题");
         }
     });
 }
@@ -78,30 +78,58 @@ if (clearLog) {
 
 
 
-/* 拖拽 */
+/* 拖拽功能 */
 const draggable = document.querySelector('.draggable');
-const parent = draggable.parentNode;
+const dragParent = draggable.parentNode;
 let isDragging = false;
 let startX, startY, currentX = 0, currentY = 0;
-draggable.addEventListener('mousedown', (e) => dragstart(e));
-draggable.addEventListener('touchstart', (e) => dragstart(e));
-document.addEventListener('mousemove', (e) => dragmove(e));
-document.addEventListener('touchmove', (e) => dragmove(e));
-document.addEventListener('mouseup', () => {
-    isDragging = false;
-});
 
-function dragstart(e) {
+// 获取事件坐标的辅助函数 (兼容鼠标和触摸)
+const getEventXY = (e) => {
+    if (e.touches && e.touches.length > 0) {
+        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+    return { x: e.clientX, y: e.clientY };
+};
+
+/* 事件监听 */
+// 鼠标事件
+draggable.addEventListener('mousedown', handleDragStart);
+document.addEventListener('mousemove', handleDragMove);
+document.addEventListener('mouseup', handleDragEnd);
+
+// 触摸事件
+draggable.addEventListener('touchstart', handleDragStart, { passive: false });
+document.addEventListener('touchmove', handleDragMove, { passive: false });
+document.addEventListener('touchend', handleDragEnd);
+
+function handleDragStart(e) {
     isDragging = true;
-    startX = e.clientX - currentX;
-    startY = e.clientY - currentY;
+    const { x, y } = getEventXY(e);
+    startX = x - currentX;
+    startY = y - currentY;
+
+    // 防止触摸屏触发默认的滚动或长按菜单
+    if (e.type === 'touchstart') {
+        // e.preventDefault(); // 如果需要彻底阻止默认行为可开启
+    }
 }
 
-function dragmove(e) {
+function handleDragMove(e) {
     if (!isDragging) return;
-    currentX = e.clientX - startX;
-    currentY = e.clientY - startY;
-    parent.style.transform = `translate(${currentX}px, ${currentY}px)`;
+
+    // 在移动端，拖动时通常需要阻止页面滚动
+    if (e.cancelable) e.preventDefault();
+
+    const { x, y } = getEventXY(e);
+    currentX = x - startX;
+    currentY = y - startY;
+
+    dragParent.style.transform = `translate(${currentX}px, ${currentY}px)`;
+}
+
+function handleDragEnd() {
+    isDragging = false;
 }
 
 

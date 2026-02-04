@@ -40,7 +40,7 @@ export const DebugCore = {
                 // }
                 
                 if(CONFIG.debug) DebugCore.resizeCanvas();
-                Logger.log(modulename, `调试模式: ${CONFIG.debug ? 'ON' : 'OFF'}`);
+                Logger.log(modulename, `调试模式: ${CONFIG.debug ? '开启' : '关闭'}`);
             });
         }
 
@@ -72,17 +72,11 @@ export const DebugCore = {
             btnTunnel.addEventListener('click', (e) => {
                 DebugCore.flags.forceTunnel = !DebugCore.flags.forceTunnel;
                 const btn = e.currentTarget;
-                if(DebugCore.flags.forceTunnel) {
-                    btn.classList.add('bg-red-600', 'text-white');
-                    btn.classList.remove('bg-slate-700');
-                    btn.innerHTML = '<i class="fas fa-ban"></i> Tunnel Active';
-                    Logger.log(modulename, "屏蔽 GPS 开启");
-                } else {
-                    btn.classList.remove('bg-red-600');
-                    btn.classList.add('bg-slate-700');
-                    btn.innerHTML = '<i class="fas fa-archway"></i> Force Tunnel';
-                    Logger.log(modulename, "屏蔽 GPS 关闭");
-                }
+                btn.classList.toggle('bg-red-600');
+                btn.classList.toggle('bg-[var(--border-color)]');
+                btn.classList.toggle('hover:bg-red-600/60');
+                btn.classList.toggle('hover:bg-[var(--border-color)]/60');
+                Logger.log(modulename, `屏蔽 GPS ${DebugCore.flags.forceTunnel ? '开启' : '关闭'}`);
             });
         }
 
@@ -100,8 +94,10 @@ export const DebugCore = {
                 DebugCore.flags.forceZupt = !DebugCore.flags.forceZupt;
                 const btn = e.currentTarget;
                 btn.classList.toggle('bg-green-600');
-                btn.classList.toggle('bg-slate-700');
-                Logger.log(modulename, `强制 ZUPT 静止 ${DebugCore.flags.forceZupt ? 'ON' : 'OFF'}`);
+                btn.classList.toggle('bg-[var(--border-color)]');
+                btn.classList.toggle('hover:bg-green-600/60');
+                btn.classList.toggle('hover:bg-[var(--border-color)]/60');
+                Logger.log(modulename, `强制 ZUPT 静止 ${DebugCore.flags.forceZupt ? '开启' : '关闭'}`);
             });
         }
 
@@ -145,6 +141,12 @@ export const DebugCore = {
     },
 
     updateStats: (dt, gpsAge, kalmanK, rawGpsSpeed, rawAccMag) => {
+        const elRawGps = document.getElementById('dbg-raw-gps');
+        const elAccMag = document.getElementById('dbg-acc-mag');
+
+        if(elRawGps) elRawGps.textContent = (rawGpsSpeed * 3.6).toFixed(1);
+        if(elAccMag) elAccMag.textContent = rawAccMag.toFixed(2);
+
         if (!CONFIG.debug) return;
 
         // 更新文本数值
@@ -153,16 +155,12 @@ export const DebugCore = {
         const elX = document.getElementById('dbg-kalman-x');
         const elK = document.getElementById('dbg-kalman-k');
         const elP = document.getElementById('dbg-kalman-p');
-        const elRawGps = document.getElementById('dbg-raw-gps');
-        const elAccMag = document.getElementById('dbg-acc-mag');
 
         if(elDt) elDt.textContent = (dt * 1000).toFixed(0);
         if(elAge) elAge.textContent = gpsAge.toFixed(1);
         if(elX) elX.textContent = STATE.kalman.x.toFixed(2);
         if(elK) elK.textContent = kalmanK.toFixed(3);
         if(elP) elP.textContent = STATE.kalman.p.toFixed(2);
-        if(elRawGps) elRawGps.textContent = (rawGpsSpeed * 3.6).toFixed(1);
-        if(elAccMag) elAccMag.textContent = rawAccMag.toFixed(2);
 
         // 更新波形数据
         DebugCore.history.push({
