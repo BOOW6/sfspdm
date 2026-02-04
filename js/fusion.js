@@ -109,13 +109,13 @@ export class FusionEngine {
         } else {
             // GPS 不可用
             if (CONFIG.mode === 'tunnel' && gpsAge < 10 && !DebugCore.flags.forceTunnel) {
-                UI.updateFusionBadge("隧道模式: 惯性导航", "text-yellow-400");
+                UI.updateFusionBadge("隧道模式: 惯性导航", "text-[var(--warn-color)]");
             } else if (DebugCore.flags.forceTunnel) {
-                 UI.updateFusionBadge("调试: 隧道模拟中", "text-yellow-400");
+                 UI.updateFusionBadge("调试: 隧道模拟中", "text-[var(--warn-color)]");
                  STATE.kalman.x *= 0.99; // 稍微快一点的衰减
             } else {
                 STATE.kalman.x *= 0.98;
-                UI.updateFusionBadge("信号丢失: 速度衰减", "text-red-400");
+                UI.updateFusionBadge("信号丢失: 速度衰减", "text-[var(--danger-color)]");
             }
         }
 
@@ -123,7 +123,7 @@ export class FusionEngine {
         const stopTimeThreshold = CONFIG.mode === 'pedestrian' ? 1.0 : 2.0;
         if (this.isStaticCounter > stopTimeThreshold && STATE.kalman.x < 1.0) {
             STATE.kalman.x = 0;
-            UI.updateFusionBadge("静止 (ZUPT)", "text-gray-400");
+            UI.updateFusionBadge("静止 (ZUPT)", "text-[var(--text-color)]/60");
         }
 
         // 6. 更新全局状态

@@ -5,7 +5,7 @@
     --text-color: oklch(92.8% 0.006 264.531);   /* gray-200 */
     --accent-color: oklch(71.5% 0.143 215.221); /* cyan-500 */
     --warn-color: oklch(76.9% 0.188 70.08);     /* amber-500 */
-    --danger-color: oklch(63.7% 0.237 25.331);  /* red-500 */
+    --danger-color: oklch(70.4% 0.191 22.216);  /* red-400 */
 }
 
 body.theme-oled {

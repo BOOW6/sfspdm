@@ -64,7 +64,7 @@ export const UI = {
         } else if (status === 'warn') {
             el.className = "px-2 py-1 rounded text-xs font-bold bg-[var(--warn-color)] text-black transition-colors";
         } else {
-            el.className = "px-2 py-1 rounded text-xs font-bold bg-gray-700 text-gray-400 transition-colors";
+            el.className = "px-2 py-1 rounded text-xs font-bold bg-[var(--border-color)] text-[var(--text-color)]/60 transition-colors";
         }
     },
 

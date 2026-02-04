@@ -45,7 +45,7 @@ const algoSelect = document.getElementById('algo-select');
 if (algoSelect) {
     algoSelect.addEventListener('change', (e) => {
         CONFIG.mode = e.target.value;
-        Logger.log(modulename, `切换算法模式: ${e.target.options[e.target.selectedIndex].text}`);
+        Logger.log(modulename, `切换场景 ${e.target.options[e.target.selectedIndex].text}`);
     });
 }
 
