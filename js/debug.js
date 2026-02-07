@@ -140,12 +140,14 @@ export const DebugCore = {
         return DebugCore.flags.forceTunnel;
     },
 
-    updateStats: (dt, gpsAge, kalmanK, rawGpsSpeed, rawAccMag) => {
+    updateStats: (dt, gpsAge, kalmanK, rawGpsSpeed, alignment, forwardAngle) => {
         const elRawGps = document.getElementById('dbg-raw-gps');
-        const elAccMag = document.getElementById('dbg-acc-mag');
+        const elAlign = document.getElementById('dbg-align');
+        const elAngle = document.getElementById('dbg-angle');
 
         if(elRawGps) elRawGps.textContent = (rawGpsSpeed * 3.6).toFixed(1);
-        if(elAccMag) elAccMag.textContent = rawAccMag.toFixed(2);
+        if(elAlign) elAlign.textContent = `${(alignment * 100).toFixed(0)}%`;
+        if(elAngle) elAngle.textContent = `${forwardAngle.toFixed(0)}°`;
 
         if (!CONFIG.debug) return;
 
@@ -167,7 +169,8 @@ export const DebugCore = {
             fusion: STATE.speed,
             gps: STATE.gps.active ? STATE.gps.speed : 0,
             hasGps: STATE.gps.active,
-            acc: rawAccMag
+            align: alignment,
+            angle: forwardAngle
         });
         if (DebugCore.history.length > DebugCore.maxHistory) DebugCore.history.shift();
 
@@ -218,19 +221,30 @@ export const DebugCore = {
         }
         ctx.stroke();
 
-        // Draw Accel Magnitude (Red, scaled down visually or separate axis?)
-        // Let's just draw it at bottom as activity indicator
+        // Draw Alignment (Amber)
         ctx.beginPath();
-        ctx.strokeStyle = '#ef4444';
+        ctx.strokeStyle = '#f59e0b';
         ctx.lineWidth = 1;
-        ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.6;
         for (let i = 0; i < data.length; i++) {
-            // Scale Accel: 1g is roughly 1/4 height
-            const y = h - (data[i].acc * (h/20));
+            const y = h - (data[i].align * h);
             if (i === 0) ctx.moveTo(getX(i), y);
             else ctx.lineTo(getX(i), y);
         }
         ctx.stroke();
+
+        // Draw Forward Angle (Purple)
+        ctx.beginPath();
+        ctx.strokeStyle = '#a855f7';
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.4;
+        for (let i = 0; i < data.length; i++) {
+            const y = h - ((data[i].angle / 360) * h);
+            if (i === 0) ctx.moveTo(getX(i), y);
+            else ctx.lineTo(getX(i), y);
+        }
+        ctx.stroke();
+        
         ctx.globalAlpha = 1.0;
     }
 };

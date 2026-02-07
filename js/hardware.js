@@ -6,6 +6,7 @@ import { DebugCore } from './debug.js';
 import { FusionEngine } from './fusion.js';
 
 const modulename = "hardware";
+let lastLogAccuracy = null;
 
 export const Hardware = {
     init: async () => {
@@ -67,7 +68,9 @@ export const Hardware = {
             UI.setStatus('motion', 'error');
         }
 
+        // 创建并启动融合引擎，保存到全局以便场景切换
         const engine = new FusionEngine();
+        window.fusionEngine = engine;
         engine.start();
 
         const overlay = document.getElementById('permission-overlay');
@@ -96,17 +99,24 @@ export const Hardware = {
         STATE.gps.accuracy = coords.accuracy;
         STATE.gps.timestamp = timestamp || Date.now();
         STATE.gps.speed = coords.speed !== null ? coords.speed : 0;
+        STATE.gps.heading = coords.heading;
 
+        const accuracy = Math.round(STATE.gps.accuracy);
         const elAccDisp = document.getElementById('gpsacc-display');
-        elAccDisp.textContent = Math.round(coords.accuracy);
+        if (elAccDisp) elAccDisp.textContent = accuracy;
 
-        if (coords.accuracy < 20) {
+        if (accuracy < 20) {
             UI.setStatus('gps', 'active');
-        } else if (coords.accuracy < 50) {
+            lastLogAccuracy = null;
+        } else if (accuracy < 50) {
             UI.setStatus('gps', 'warn');
+            lastLogAccuracy = null;
         } else {
             UI.setStatus('gps', 'warn');
-            Logger.log(modulename, `GPS 信号较差: 精度 ${Math.round(coords.accuracy)}m`, "warn");
+            if (accuracy !== lastLogAccuracy) {
+                Logger.log(modulename, `GPS 信号较差: 精度 ${accuracy}m`, "warn");
+                lastLogAccuracy = accuracy;
+            }
         }
     },
 

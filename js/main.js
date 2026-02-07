@@ -44,8 +44,18 @@ document.querySelectorAll('button[data-unit]').forEach(btn => {
 const algoSelect = document.getElementById('algo-select');
 if (algoSelect) {
     algoSelect.addEventListener('change', (e) => {
-        CONFIG.mode = e.target.value;
-        Logger.log(modulename, `切换场景 ${e.target.options[e.target.selectedIndex].text}`);
+        const scenarioName = e.target.value;
+        const scenarioText = e.target.options[e.target.selectedIndex].text;
+        
+        // 调用融合引擎的场景切换方法
+        if (window.fusionEngine && window.fusionEngine.applyScenarioConfig) {
+            window.fusionEngine.applyScenarioConfig(scenarioName);
+            Logger.log(modulename, `场景切换: ${scenarioText}`);
+        } else {
+            // 如果融合引擎还未初始化，只更新配置
+            CONFIG.mode = scenarioName;
+            Logger.log(modulename, `配置更新: ${scenarioText} (引擎未启动)`);
+        }
     });
 }
 
